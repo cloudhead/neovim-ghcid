@@ -15,6 +15,12 @@ In principle, this should work a lot better than the alternatives.
   * neovim (https://github.com/neovim/neovim)
   * ghcid (https://github.com/ndmitchell/ghcid)
 
+1. Installation
+
+  Like any other plugin. If you're using vim-plug, then add:
+
+      Plug 'cloudhead/neovim-ghcid'
+
 1. Usage
 
   `:Ghcid` runs ghcid inside a neovim terminal buffer and populates
