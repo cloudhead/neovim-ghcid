@@ -10,18 +10,18 @@ In principle, this should work a lot better than the alternatives.
 
 [1]: https://github.com/ndmitchell/ghcid
 
-0. Dependencies
+. Dependencies
 
   * neovim (https://github.com/neovim/neovim)
   * ghcid (https://github.com/ndmitchell/ghcid)
 
-1. Installation
+. Installation
 
   Like any other plugin. If you're using vim-plug, then add:
 
       Plug 'cloudhead/neovim-ghcid'
 
-1. Usage
+. Usage
 
   `:Ghcid` runs ghcid inside a neovim terminal buffer and populates
   the quickfix list with any errors or warnings.
