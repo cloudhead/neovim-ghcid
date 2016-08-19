@@ -6,8 +6,6 @@
 
 Provides instant haskell error feedback inside of neovim, via ghcid[1].
 
-In principle, this should work a lot better than the alternatives.
-
 [1]: https://github.com/ndmitchell/ghcid
 
 . Dependencies
