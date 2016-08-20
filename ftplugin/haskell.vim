@@ -10,6 +10,7 @@ endif
 let g:ghcid_loaded = 1
 
 let g:ghcid_lines = 10
+let g:ghcid_command = "ghcid"
 let s:ghcid_base_sign_id = 100
 let s:ghcid_sign_id = s:ghcid_base_sign_id
 let s:ghcid_dummy_sign_id = 99
@@ -144,7 +145,6 @@ function! s:ghcid_clear_signs() abort
 endfunction
 
 function! s:ghcid() abort
-  let command = "ghcid"
   let opts = {}
 
   function! opts.on_exit(id, code)
@@ -156,7 +156,7 @@ function! s:ghcid() abort
 
   below new
   execute 'resize' g:ghcid_lines
-  call termopen(command, opts)
+  call termopen(g:ghcid_command, opts)
   let s:ghcid_job_id = b:terminal_job_id
   file ghcid
   wincmd p
