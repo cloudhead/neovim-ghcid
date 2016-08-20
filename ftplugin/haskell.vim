@@ -18,7 +18,7 @@ let s:ghcid_job_id = 0
 command! Ghcid     call s:ghcid()
 command! GhcidKill call s:ghcid_kill()
 
-sign define ghcid-error text=·· texthl=ErrorMsg
+sign define ghcid-error text=× texthl=ErrorSign
 sign define ghcid-dummy
 
 function! s:ghcid_init()
