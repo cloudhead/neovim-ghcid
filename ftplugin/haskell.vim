@@ -143,7 +143,6 @@ function! s:ghcid_clear_signs() abort
   for i in range(s:ghcid_base_sign_id, s:ghcid_sign_id)
     silent exe 'sign' 'unplace' i
   endfor
-  cexpr ""
   let s:ghcid_sign_id = s:ghcid_base_sign_id
 endfunction
 
