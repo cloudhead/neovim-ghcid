@@ -14,6 +14,7 @@ let s:ghcid_base_sign_id = 100
 let s:ghcid_sign_id = s:ghcid_base_sign_id
 let s:ghcid_dummy_sign_id = 99
 let s:ghcid_job_id = 0
+let s:ghcid_error_header = {}
 
 command! Ghcid     call s:ghcid()
 command! GhcidKill call s:ghcid_kill()
@@ -69,8 +70,6 @@ function! s:ghcid_add_to_qflist(l, e)
   call add(a:l, a:e)
   call setqflist(a:l)
 endfunction
-
-let s:ghcid_error_header = {}
 
 function! s:ghcid_update(ghcid, data) abort
   let data = copy(a:data)
