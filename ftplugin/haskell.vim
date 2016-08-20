@@ -77,8 +77,7 @@ function! s:ghcid_update(ghcid, data) abort
   " If we see 'All good', then there are no errors and we
   " can safely close the ghcid window and reset the qflist.
   if !empty(matchstr(join(data), "All good"))
-    if !a:ghcid.closed
-      let a:ghcid.closed = 1
+    if bufwinnr('^ghcid$') > 0
       drop ghcid
       quit
     endif
@@ -120,8 +119,7 @@ function! s:ghcid_update(ghcid, data) abort
 
   " Since we got here, we must have a valid error.
   " Open the ghcid window.
-  if a:ghcid.closed
-    let a:ghcid.closed = 0
+  if bufwinnr('^ghcid$') < 0
     bot split ghcid
     execute 'resize' g:ghcid_lines
     normal! G
@@ -147,7 +145,7 @@ endfunction
 
 function! s:ghcid() abort
   let command = "ghcid"
-  let opts = { 'closed': 0 }
+  let opts = {}
 
   function! opts.on_exit(id, code)
   endfunction
