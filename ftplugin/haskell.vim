@@ -48,8 +48,8 @@ function! s:ghcid_parse_error(str) abort
          \ 'valid': 1,
          \ 'filename': expand(file),
          \ 'bufnr': bufnr(expand(file)),
-         \ 'lnum': lnum,
-         \ 'col': col,
+         \ 'lnum': str2nr(lnum),
+         \ 'col': str2nr(col),
          \ 'text': text }
 endfunction
 
