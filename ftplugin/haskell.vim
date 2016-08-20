@@ -86,6 +86,7 @@ function! s:ghcid_update(ghcid, data) abort
       quit
     endif
     echo "Ghcid: OK"
+    call setqflist([])
   elseif error.valid && a:ghcid.closed
     let a:ghcid.closed = 0
     bot split ghcid
