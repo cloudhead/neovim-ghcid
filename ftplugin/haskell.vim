@@ -163,8 +163,9 @@ function! s:ghcid() abort
 endfunction
 
 function! s:ghcid_kill() abort
-  if !empty(bufname('ghcid'))
-    silent bwipeout! ghcid
+  let b = bufnr('^ghcid$')
+  if b > 0
+    silent exe 'bwipeout!' b
     echo "Ghcid: Killed"
   else
     echo "Ghcid: Not running"
