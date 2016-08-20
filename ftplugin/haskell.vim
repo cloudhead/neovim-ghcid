@@ -29,24 +29,55 @@ autocmd BufWritePost,FileChangedShellPost *.hs call s:ghcid_clear_signs()
 autocmd TextChanged                       *.hs call s:ghcid_clear_signs()
 autocmd BufEnter                          *.hs call s:ghcid_init()
 
-function! s:ghcid_update(ghcid, data) abort
-  caddexpr join(a:data, "\n")
-  let list = getqflist()
-  let filename = expand('%:p')
-  let errors = 0
+let s:ghcid_error_regexp=
+  \   '^\([^\t\r\n:]\+\):\(\d\+\):\(\d\+\): error:\r'
+  \ . '\s\+\([^\t\r\n:]\+\)'
 
-  for entry in list
-    if entry.valid
-      let errors += 1
-      let s:ghcid_sign_id += 1
-      silent exe "sign"
-        \ "place"
-        \ s:ghcid_sign_id
-        \ "line=" . string(entry.lnum)
-        \ "name=ghcid-error"
-        \ "file=" . expand(bufname(entry.bufnr))
+function! s:ghcid_parse_error(str) abort
+  let result = matchlist(a:str, s:ghcid_error_regexp)
+  if !len(result)
+    return { 'valid': 0 }
+  endif
+
+  let file = result[1]
+  let lnum = result[2]
+  let col  = result[3]
+  let text = result[4]
+
+  return { 'type': 'E',
+         \ 'valid': 1,
+         \ 'filename': expand(file),
+         \ 'bufnr': bufnr(expand(file)),
+         \ 'lnum': lnum,
+         \ 'col': col,
+         \ 'text': text }
+endfunction
+
+function! s:ghcid_add_to_qflist(l, e)
+  for i in a:l
+    if i.lnum == a:e.lnum && i.bufnr == a:e.bufnr
+      return
     endif
   endfor
+  call add(a:l, a:e)
+  call setqflist(a:l)
+endfunction
+
+function! s:ghcid_update(ghcid, data) abort
+  let error = s:ghcid_parse_error(join(a:data))
+  let filename = expand('%:p')
+  let qflist = getqflist()
+
+  if error.valid
+    call s:ghcid_add_to_qflist(qflist, error)
+    let s:ghcid_sign_id += 1
+    silent exe "sign"
+      \ "place"
+      \ s:ghcid_sign_id
+      \ "line=" . error.lnum
+      \ "name=ghcid-error"
+      \ "file=" . error.filename
+  endif
 
   if !empty(matchstr(a:data, "All good"))
     if !a:ghcid.closed
@@ -55,7 +86,7 @@ function! s:ghcid_update(ghcid, data) abort
       quit
     endif
     echo "Ghcid: OK"
-  elseif errors != 0 && a:ghcid.closed
+  elseif error.valid && a:ghcid.closed
     let a:ghcid.closed = 0
     bot split ghcid
     execute 'resize' g:ghcid_lines
