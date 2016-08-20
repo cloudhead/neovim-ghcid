@@ -29,28 +29,35 @@ autocmd BufWritePost,FileChangedShellPost *.hs call s:ghcid_clear_signs()
 autocmd TextChanged                       *.hs call s:ghcid_clear_signs()
 autocmd BufEnter                          *.hs call s:ghcid_init()
 
-let s:ghcid_error_regexp=
-  \   '\s*\([^\t\r\n:]\+\):\(\d\+\):\(\d\+\): error:\r'
-  \ . '\s\+\([^\t\r\n:]\+\)'
+let s:ghcid_error_header_regexp=
+  \   '^\s*\([^\t\r\n:]\+\):\(\d\+\):\(\d\+\): error:'
 
-function! s:ghcid_parse_error(str) abort
-  let result = matchlist(a:str, s:ghcid_error_regexp)
+let s:ghcid_error_text_regexp=
+  \   '\s\+\([^\t\r\n]\+\)'
+
+function! s:ghcid_parse_error_text(str) abort
+  let result = matchlist(a:str, s:ghcid_error_text_regexp)
   if !len(result)
-    return { 'valid': 0 }
+    return
+  endif
+  return result[1]
+endfunction
+
+function! s:ghcid_parse_error_header(str) abort
+  let result = matchlist(a:str, s:ghcid_error_header_regexp)
+  if !len(result)
+    return {}
   endif
 
   let file = result[1]
   let lnum = result[2]
   let col  = result[3]
-  let text = result[4]
 
   return { 'type': 'E',
-         \ 'valid': 1,
          \ 'filename': expand(file),
          \ 'bufnr': bufnr(expand(file)),
          \ 'lnum': str2nr(lnum),
-         \ 'col': str2nr(col),
-         \ 'text': text }
+         \ 'col': str2nr(col) }
 endfunction
 
 function! s:ghcid_add_to_qflist(l, e)
@@ -63,23 +70,14 @@ function! s:ghcid_add_to_qflist(l, e)
   call setqflist(a:l)
 endfunction
 
+let s:ghcid_error_header = {}
+
 function! s:ghcid_update(ghcid, data) abort
-  let error = s:ghcid_parse_error(join(a:data))
-  let filename = expand('%:p')
-  let qflist = getqflist()
+  let data = copy(a:data)
 
-  if error.valid
-    call s:ghcid_add_to_qflist(qflist, error)
-    let s:ghcid_sign_id += 1
-    silent exe "sign"
-      \ "place"
-      \ s:ghcid_sign_id
-      \ "line=" . error.lnum
-      \ "name=ghcid-error"
-      \ "file=" . error.filename
-  endif
-
-  if !empty(matchstr(a:data, "All good"))
+  " If we see 'All good', then there are no errors and we
+  " can safely close the ghcid window and reset the qflist.
+  if !empty(matchstr(join(data), "All good"))
     if !a:ghcid.closed
       let a:ghcid.closed = 1
       drop ghcid
@@ -87,13 +85,58 @@ function! s:ghcid_update(ghcid, data) abort
     endif
     echo "Ghcid: OK"
     call setqflist([])
-  elseif error.valid && a:ghcid.closed
+  endif
+
+  " Try to parse an error header string. If it succeeds, set the top-level
+  " variable to the result.
+  let error_header = s:ghcid_error_header
+  if empty(error_header)
+    while !empty(data)
+      let error_header = s:ghcid_parse_error_header(data[0])
+      let data = data[1:]
+
+      if !empty(error_header)
+        let s:ghcid_error_header = error_header
+        break
+      endif
+    endwhile
+
+    " If we haven't found a header and there is nothing left to parse,
+    " there's nothing left to do.
+    if empty(error_header) || empty(data)
+      return
+    endif
+  endif
+
+  " Try to parse the error text. If we got to this point, we have
+  " an error header and some data left to parse.
+  let error_text           = s:ghcid_parse_error_text(join(data))
+  let error                = copy(error_header)
+  let error.text           = error_text
+  let error.valid          = 1
+  let s:ghcid_error_header = {}
+
+  let qflist = getqflist()
+  call s:ghcid_add_to_qflist(qflist, error)
+
+  " Since we got here, we must have a valid error.
+  " Open the ghcid window.
+  if a:ghcid.closed
     let a:ghcid.closed = 0
     bot split ghcid
     execute 'resize' g:ghcid_lines
     normal! G
     wincmd p
   endif
+
+  silent exe "sign"
+    \ "place"
+    \ s:ghcid_sign_id
+    \ "line=" . error.lnum
+    \ "name=ghcid-error"
+    \ "file=" . error.filename
+
+  let s:ghcid_sign_id += 1
 endfunction
 
 function! s:ghcid_clear_signs() abort
