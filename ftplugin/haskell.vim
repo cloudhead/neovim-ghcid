@@ -30,7 +30,7 @@ autocmd TextChanged                       *.hs call s:ghcid_clear_signs()
 autocmd BufEnter                          *.hs call s:ghcid_init()
 
 let s:ghcid_error_regexp=
-  \   '^\([^\t\r\n:]\+\):\(\d\+\):\(\d\+\): error:\r'
+  \   '\s*\([^\t\r\n:]\+\):\(\d\+\):\(\d\+\): error:\r'
   \ . '\s\+\([^\t\r\n:]\+\)'
 
 function! s:ghcid_parse_error(str) abort
