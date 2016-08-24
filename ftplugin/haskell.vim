@@ -66,18 +66,19 @@ function! s:ghcid_parse_error_header(str) abort
   let col  = result[3]
 
   " Find buffer after making file path relative to cd.
-  let buf = bufnr(fnamemodify(expand(file), ':.'))
+  " If the buffer isn't valid, vim will use the 'filename' entry.
+  let efile = fnamemodify(expand(file), ':.')
+  let buf = bufnr(efile)
 
-  if buf <= 0
-    echoerr file . " not found in buffer list!"
-    return {}
+  let entry = { 'type': 'E',
+              \ 'filename': efile,
+              \ 'lnum': str2nr(lnum),
+              \ 'col': str2nr(col) }
+  if buf > 0
+    let entry.bufnr = buf
   endif
 
-  return { 'type': 'E',
-         \ 'filename': expand(file),
-         \ 'bufnr': buf,
-         \ 'lnum': str2nr(lnum),
-         \ 'col': str2nr(col) }
+  return entry
 endfunction
 
 function! s:ghcid_add_to_qflist(e)
