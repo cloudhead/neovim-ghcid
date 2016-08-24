@@ -162,6 +162,9 @@ function! s:ghcid_clear_signs() abort
     silent exe 'sign' 'unplace' i
   endfor
   let s:ghcid_sign_id = s:ghcid_base_sign_id
+
+  " Clear the quickfix list.
+  call setqflist([])
 endfunction
 
 function! s:ghcid() abort
