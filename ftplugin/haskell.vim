@@ -118,6 +118,7 @@ function! s:ghcid_update(ghcid, data) abort
     endif
     echo "Ghcid: OK"
     call setqflist([])
+    return
   endif
 
   " Try to parse an error header string. If it succeeds, set the top-level
