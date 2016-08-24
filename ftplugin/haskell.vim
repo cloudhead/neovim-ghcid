@@ -4,10 +4,10 @@
 " Author:       Alexis Sellier <http://cloudhead.io>
 " Version:      0.1
 
-if exists("g:ghcid_loaded") || &cp || !has('nvim')
+if exists("g:loaded_ghcid") || &cp || !has('nvim')
   finish
 endif
-let g:ghcid_loaded = 1
+let g:loaded_ghcid = 1
 
 let g:ghcid_lines = 10
 let g:ghcid_command = "ghcid"
