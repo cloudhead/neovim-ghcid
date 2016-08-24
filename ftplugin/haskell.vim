@@ -65,9 +65,17 @@ function! s:ghcid_parse_error_header(str) abort
   let lnum = result[2]
   let col  = result[3]
 
+  " Find buffer after making file path relative to cd.
+  let buf = bufnr(fnamemodify(expand(file), ':.'))
+
+  if buf <= 0
+    echoerr file . " not found in buffer list!"
+    return {}
+  endif
+
   return { 'type': 'E',
          \ 'filename': expand(file),
-         \ 'bufnr': bufnr(expand(file)),
+         \ 'bufnr': buf,
          \ 'lnum': str2nr(lnum),
          \ 'col': str2nr(col) }
 endfunction
