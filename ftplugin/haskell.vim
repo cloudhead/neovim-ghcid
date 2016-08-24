@@ -37,6 +37,20 @@ function! s:ghcid_bufnr()
   return bufnr(s:ghcid_buf_id)
 endfunction
 
+function! s:ghcid_switchtowin()
+  exe s:ghcid_winnr() . 'wincmd w'
+endfunction
+
+function! s:ghcid_update_status(nerrs)
+  call s:ghcid_switchtowin()
+  let b:ghcid_status = 'Ghcid: All good'
+  if a:nerrs > 0
+    let b:ghcid_status = 'Ghcid: ' . string(a:nerrs) . ' error(s)'
+  endif
+  setlocal statusline=%{b:ghcid_status}
+  wincmd p
+endfunction
+
 autocmd BufWritePost,FileChangedShellPost *.hs call s:ghcid_clear_signs()
 autocmd TextChanged                       *.hs call s:ghcid_clear_signs()
 autocmd BufEnter                          *.hs call s:ghcid_init()
@@ -99,7 +113,7 @@ function! s:ghcid_update(ghcid, data) abort
   " can safely close the ghcid window and reset the qflist.
   if !empty(matchstr(join(data), "All good"))
     if s:ghcid_winnr()
-      exe s:ghcid_winnr() . 'wincmd w'
+      call s:ghcid_switchtowin()
       quit
     endif
     echo "Ghcid: OK"
@@ -136,6 +150,7 @@ function! s:ghcid_update(ghcid, data) abort
   let s:ghcid_error_header = {}
 
   call s:ghcid_add_to_qflist(error)
+  call s:ghcid_update_status(len(getqflist()))
 
   " Since we got here, we must have a valid error.
   " Open the ghcid window.
