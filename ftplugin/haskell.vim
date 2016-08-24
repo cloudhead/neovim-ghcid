@@ -80,14 +80,15 @@ function! s:ghcid_parse_error_header(str) abort
          \ 'col': str2nr(col) }
 endfunction
 
-function! s:ghcid_add_to_qflist(l, e)
-  for i in a:l
+function! s:ghcid_add_to_qflist(e)
+  let qflist = getqflist()
+  for i in qflist
     if i.lnum == a:e.lnum && i.bufnr == a:e.bufnr
       return
     endif
   endfor
-  call add(a:l, a:e)
-  call setqflist(a:l)
+  " Append to existing list.
+  call setqflist([a:e], 'a')
 endfunction
 
 function! s:ghcid_update(ghcid, data) abort
@@ -133,8 +134,7 @@ function! s:ghcid_update(ghcid, data) abort
   let error.valid          = 1
   let s:ghcid_error_header = {}
 
-  let qflist = getqflist()
-  call s:ghcid_add_to_qflist(qflist, error)
+  call s:ghcid_add_to_qflist(error)
 
   " Since we got here, we must have a valid error.
   " Open the ghcid window.
