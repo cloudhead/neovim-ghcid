@@ -201,6 +201,8 @@ endfunction
 function! s:ghcid_kill() abort
   if s:ghcid_bufnr() > 0
     silent exe 'bwipeout!' s:ghcid_bufnr()
+    let s:ghcid_buf_id = -1
+    let s:ghcid_win_id = -1
     echo "Ghcid: Killed"
   else
     echo "Ghcid: Not running"
