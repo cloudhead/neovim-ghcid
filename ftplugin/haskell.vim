@@ -10,6 +10,7 @@ endif
 let g:loaded_ghcid = 1
 
 let g:ghcid_lines = 10
+let g:ghcid_keep_open = 0
 let g:ghcid_command = "ghcid"
 let s:ghcid_base_sign_id = 100
 let s:ghcid_sign_id = s:ghcid_base_sign_id
@@ -53,6 +54,13 @@ function! s:ghcid_update_status(nerrs)
   endif
   setlocal statusline=%{b:ghcid_status}
   wincmd p
+endfunction
+
+function! s:ghcid_closewin()
+  if !g:ghcid_keep_open
+    call s:ghcid_gotowin()
+    quit
+  endif
 endfunction
 
 autocmd BufWritePost,FileChangedShellPost *.hs call s:ghcid_clear_signs()
@@ -123,8 +131,7 @@ function! s:ghcid_update(ghcid, data) abort
   " can safely close the ghcid window and reset the qflist.
   if !empty(matchstr(join(data), "All good"))
     if s:ghcid_winnr()
-      call s:ghcid_gotowin()
-      quit
+      call s:ghcid_closewin()
     endif
     echo "Ghcid: OK"
     call setqflist([])
