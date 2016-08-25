@@ -9,9 +9,18 @@ if exists("g:loaded_ghcid") || &cp || !has('nvim')
 endif
 let g:loaded_ghcid = 1
 
-let g:ghcid_lines = 10
-let g:ghcid_keep_open = 0
-let g:ghcid_command = "ghcid"
+if !exists("g:ghcid_lines")
+    let g:ghcid_lines = 10
+endif
+
+if !exists("g:ghcid_keep_open")
+    let g:ghcid_keep_open = 0
+endif
+
+if !exists("g:ghcid_command")
+    let g:ghcid_command = "ghcid"
+endif
+
 let s:ghcid_base_sign_id = 100
 let s:ghcid_sign_id = s:ghcid_base_sign_id
 let s:ghcid_dummy_sign_id = 99
