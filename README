@@ -7,9 +7,11 @@ Provides instant haskell error feedback inside of neovim, via ghcid[1].
 This should be a lot faster than running neomake with ghc-mod, and
 also a lot simpler.
 
-  Obligatory gif: https://github.com/cloudhead/images/raw/master/neovim-ghcid.gif
-
 [1]: https://github.com/ndmitchell/ghcid
+
+. Obligatory gif
+
+  https://github.com/cloudhead/images/raw/master/neovim-ghcid.gif
 
 . Dependencies
 
