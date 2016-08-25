@@ -11,21 +11,25 @@ also a lot simpler.
 
 . Dependencies
 
+  * neovim
   * ghcid (https://github.com/ndmitchell/ghcid)
 
 . Installation
 
-  Like any other plugin. If you're using vim-plug, then add:
+  If you're using vim-plug, then add:
 
       Plug 'cloudhead/neovim-ghcid'
 
+  to your init.vim. Alternatively, copy the files to your .config/nvim
+  folder.
+
 . Usage
 
-  `:Ghcid` runs ghcid inside a neovim terminal buffer and populates
+  ':Ghcid' runs ghcid inside a neovim terminal buffer and populates
   the quickfix list with any errors or warnings.
 
   After every file save, the quickfix list is updated with the output
   of ghcid.
 
-  `:GhcidKill` kills the ghcid job.
+  ':GhcidKill' kills the ghcid job.
 
