@@ -185,11 +185,12 @@ function! s:ghcid_update(ghcid, data) abort
 
   " Try to parse the error text. If we got to this point, we have
   " an error header and some data left to parse.
-  let error_text           = s:ghcid_parse_error_text(join(data))
+  let error_text           = s:ghcid_parse_error_text(data[0])
   let error                = copy(error_header)
   let error.text           = error_text
   let error.valid          = 1
   let s:ghcid_error_header = {}
+  let data                 = data[1:]
 
   call s:ghcid_add_to_qflist(error)
   call s:ghcid_update_status()
@@ -209,6 +210,8 @@ function! s:ghcid_update(ghcid, data) abort
     \ "file=" . error.filename
 
   let s:ghcid_sign_id += 1
+
+  return data
 endfunction
 
 function! s:ghcid_clear_signs() abort
@@ -237,7 +240,11 @@ function! s:ghcid() abort
   endfunction
 
   function! opts.on_stdout(id, data, event) abort
-    call s:ghcid_update(self, a:data)
+    let data = a:data
+
+    while !empty(data)
+      let data = s:ghcid_update(self, data)
+    endwhile
   endfunction
 
   if s:ghcid_bufnr() > 0
