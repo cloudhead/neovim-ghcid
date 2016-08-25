@@ -63,6 +63,16 @@ function! s:ghcid_closewin()
   endif
 endfunction
 
+function! s:ghcid_openwin(buf)
+  if a:buf > 0
+    exe 'below' g:ghcid_lines . 'sp' '#' . a:buf
+  else
+    exe 'below' g:ghcid_lines . 'new'
+  endif
+  silent set nobuflisted
+  normal! G
+endfunction
+
 autocmd BufWritePost,FileChangedShellPost *.hs call s:ghcid_clear_signs()
 autocmd TextChanged                       *.hs call s:ghcid_clear_signs()
 autocmd BufEnter                          *.hs call s:ghcid_init()
@@ -173,10 +183,8 @@ function! s:ghcid_update(ghcid, data) abort
   " Since we got here, we must have a valid error.
   " Open the ghcid window.
   if !s:ghcid_winnr()
-    bot new | exe 'buffer' s:ghcid_bufnr()
+    call s:ghcid_openwin(s:ghcid_bufnr())
     let s:ghcid_win_id = win_getid()
-    execute 'resize' g:ghcid_lines
-    normal! G
     wincmd p
   endif
 
@@ -219,12 +227,10 @@ function! s:ghcid() abort
     call s:ghcid_update(self, a:data)
   endfunction
 
-  exe 'below' g:ghcid_lines . 'new'
-  set nobuflisted
-
   if s:ghcid_bufnr() > 0
-    exe 'buffer' s:ghcid_bufnr()
+    call s:ghcid_openwin(s:ghcid_bufnr())
   else
+    call s:ghcid_openwin(0)
     call termopen(g:ghcid_command, opts)
     let s:ghcid_job_id = b:terminal_job_id
   endif
