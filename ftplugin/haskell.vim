@@ -198,8 +198,7 @@ function! s:ghcid() abort
     call s:ghcid_update(self, a:data)
   endfunction
 
-  below new
-  execute 'resize' g:ghcid_lines
+  exe 'below' g:ghcid_lines . 'new'
   set nobuflisted
 
   if s:ghcid_bufnr() > 0
