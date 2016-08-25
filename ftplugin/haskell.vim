@@ -42,6 +42,10 @@ function! s:ghcid_gotowin()
 endfunction
 
 function! s:ghcid_update_status(nerrs)
+  if s:ghcid_winnr() <= 0
+    return
+  endif
+
   call s:ghcid_gotowin()
   let b:ghcid_status = 'Ghcid: All good'
   if a:nerrs > 0
