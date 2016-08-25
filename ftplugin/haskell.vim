@@ -37,12 +37,12 @@ function! s:ghcid_bufnr()
   return bufnr(s:ghcid_buf_id)
 endfunction
 
-function! s:ghcid_switchtowin()
-  exe s:ghcid_winnr() . 'wincmd w'
+function! s:ghcid_gotowin()
+  call win_gotoid(s:ghcid_win_id)
 endfunction
 
 function! s:ghcid_update_status(nerrs)
-  call s:ghcid_switchtowin()
+  call s:ghcid_gotowin()
   let b:ghcid_status = 'Ghcid: All good'
   if a:nerrs > 0
     let b:ghcid_status = 'Ghcid: ' . string(a:nerrs) . ' error(s)'
@@ -113,7 +113,7 @@ function! s:ghcid_update(ghcid, data) abort
   " can safely close the ghcid window and reset the qflist.
   if !empty(matchstr(join(data), "All good"))
     if s:ghcid_winnr()
-      call s:ghcid_switchtowin()
+      call s:ghcid_gotowin()
       quit
     endif
     echo "Ghcid: OK"
