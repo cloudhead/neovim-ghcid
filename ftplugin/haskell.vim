@@ -231,7 +231,6 @@ function! s:ghcid() abort
 
   let s:ghcid_win_id = win_getid()
   let s:ghcid_buf_id = bufnr('%')
-  file ghcid
   wincmd p
 endfunction
 
