@@ -42,18 +42,27 @@ function! s:ghcid_gotowin()
   call win_gotoid(s:ghcid_win_id)
 endfunction
 
-function! s:ghcid_update_status(nerrs)
+function! s:ghcid_update_status()
   if s:ghcid_winnr() <= 0
     return
   endif
 
-  call s:ghcid_gotowin()
+  let nerrs = len(getqflist())
+  let window = win_getid()
+
+  if window != s:ghcid_winnr()
+    call s:ghcid_gotowin()
+  endif
+
   let b:ghcid_status = 'Ghcid: All good'
-  if a:nerrs > 0
-    let b:ghcid_status = 'Ghcid: ' . string(a:nerrs) . ' error(s)'
+  if nerrs > 0
+    let b:ghcid_status = 'Ghcid: ' . string(nerrs) . ' error(s)'
   endif
   setlocal statusline=%{b:ghcid_status}
-  wincmd p
+
+  if win_getid() != window
+    call win_gotoid(window)
+  endif
 endfunction
 
 function! s:ghcid_closewin()
@@ -68,7 +77,10 @@ function! s:ghcid_openwin(buf)
     exe 'below' g:ghcid_lines . 'sp' '#' . a:buf
   else
     exe 'below' g:ghcid_lines . 'new'
+    file ghcid
   endif
+  let s:ghcid_win_id = win_getid()
+  call s:ghcid_update_status()
   silent set nobuflisted
   normal! G
 endfunction
@@ -145,6 +157,7 @@ function! s:ghcid_update(ghcid, data) abort
     endif
     echo "Ghcid: OK"
     call setqflist([])
+    call s:ghcid_update_status()
     return
   endif
 
@@ -178,13 +191,12 @@ function! s:ghcid_update(ghcid, data) abort
   let s:ghcid_error_header = {}
 
   call s:ghcid_add_to_qflist(error)
-  call s:ghcid_update_status(len(getqflist()))
+  call s:ghcid_update_status()
 
   " Since we got here, we must have a valid error.
   " Open the ghcid window.
   if !s:ghcid_winnr()
     call s:ghcid_openwin(s:ghcid_bufnr())
-    let s:ghcid_win_id = win_getid()
     wincmd p
   endif
 
