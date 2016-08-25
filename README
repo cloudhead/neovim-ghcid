@@ -15,8 +15,8 @@ also a lot simpler.
 
 . Dependencies
 
-  * neovim
-  * ghcid (https://github.com/ndmitchell/ghcid)
+  * neovim >= 0.1.5 (https://github.com/neovim/neovim)
+  * ghcid >= 0.6.5 (https://github.com/ndmitchell/ghcid)
 
 . Installation
 
