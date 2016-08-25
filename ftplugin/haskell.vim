@@ -202,6 +202,7 @@ endfunction
 
 function! s:ghcid() abort
   let opts = {}
+  let s:ghcid_killcmd = 0
 
   if s:ghcid_winnr() > 0
     echo "Ghcid: Already running"
@@ -209,7 +210,7 @@ function! s:ghcid() abort
   endif
 
   function! opts.on_exit(id, code)
-    if a:code != 0
+    if a:code != 0 && !s:ghcid_killcmd
       echoerr "Ghcid: Exited with status " . a:code
     endif
   endfunction
@@ -236,6 +237,7 @@ endfunction
 
 function! s:ghcid_kill() abort
   if s:ghcid_bufnr() > 0
+    let s:ghcid_killcmd = 1
     silent exe 'bwipeout!' s:ghcid_bufnr()
     let s:ghcid_buf_id = -1
     let s:ghcid_win_id = -1
