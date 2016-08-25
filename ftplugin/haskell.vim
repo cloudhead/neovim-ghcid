@@ -196,6 +196,11 @@ function! s:ghcid() abort
   endif
 
   function! opts.on_exit(id, code)
+    if a:code != 0
+      echoerr "Ghcid: Exited with status " . a:code
+    else
+      echom "Ghcid: Exited"
+    endif
   endfunction
 
   function! opts.on_stdout(id, data, event) abort
