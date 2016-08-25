@@ -86,12 +86,18 @@ function! s:ghcid_parse_error_header(str) abort
   " Find buffer after making file path relative to cd.
   " If the buffer isn't valid, vim will use the 'filename' entry.
   let efile = fnamemodify(expand(file), ':.')
-  let buf = bufnr(efile)
+
+  " Not a valid filename.
+  if empty(efile)
+    return {}
+  endif
 
   let entry = { 'type': 'E',
               \ 'filename': efile,
               \ 'lnum': str2nr(lnum),
               \ 'col': str2nr(col) }
+
+  let buf = bufnr(efile)
   if buf > 0
     let entry.bufnr = buf
   endif
