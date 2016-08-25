@@ -83,6 +83,7 @@ function! s:ghcid_openwin(buf)
   call s:ghcid_update_status()
   silent set nobuflisted
   normal! G
+  echo
 endfunction
 
 autocmd BufWritePost,FileChangedShellPost *.hs call s:ghcid_clear_signs()
