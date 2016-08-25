@@ -78,7 +78,7 @@ autocmd TextChanged                       *.hs call s:ghcid_clear_signs()
 autocmd BufEnter                          *.hs call s:ghcid_init()
 
 let s:ghcid_error_header_regexp=
-  \   '^\s*\([^\t\r\n:]\+\):\(\d\+\):\(\d\+\): error:'
+  \   '^\s*\([^\t\r\n:]\+\):\(\d\+\):\(\d\+\):'
 
 let s:ghcid_error_text_regexp=
   \   '\s\+\([^\t\r\n]\+\)'
