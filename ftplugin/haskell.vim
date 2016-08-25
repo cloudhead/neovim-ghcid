@@ -200,6 +200,7 @@ function! s:ghcid() abort
 
   below new
   execute 'resize' g:ghcid_lines
+  set nobuflisted
 
   if s:ghcid_bufnr() > 0
     exe 'buffer' s:ghcid_bufnr()
