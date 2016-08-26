@@ -246,6 +246,8 @@ function! s:ghcid_clear_signs() abort
 endfunction
 
 function! s:ghcid_update_signs() abort
+  call setqflist([])
+
   if !s:ghcid_allgood()
     return
   endif
