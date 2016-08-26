@@ -21,6 +21,10 @@ if !exists("g:ghcid_command")
   let g:ghcid_command = "ghcid"
 endif
 
+if !exists("g:ghcid_signcolumn")
+  let g:ghcid_signcolumn = 2
+endif
+
 let s:ghcid_base_sign_id = 100
 let s:ghcid_sign_id = s:ghcid_base_sign_id
 let s:ghcid_dummy_sign_id = 99
@@ -36,7 +40,9 @@ sign define ghcid-error text=× texthl=ErrorSign
 sign define ghcid-dummy
 
 function! s:ghcid_init()
-  exe 'sign' 'place'  s:ghcid_dummy_sign_id  'line=9999' 'name=ghcid-dummy' 'buffer=' . bufnr('%')
+  if g:ghcid_signcolumn == 1
+    exe 'sign' 'place'  s:ghcid_dummy_sign_id  'line=9999' 'name=ghcid-dummy' 'buffer=' . bufnr('%')
+  endif
 endfunction
 
 function! s:ghcid_winnr()
@@ -211,14 +217,16 @@ function! s:ghcid_update(ghcid, data) abort
     wincmd p
   endif
 
-  silent exe "sign"
-    \ "place"
-    \ s:ghcid_sign_id
-    \ "line=" . error.lnum
-    \ "name=ghcid-error"
-    \ "file=" . error.filename
+  if g:ghcid_signcolumn
+    silent exe "sign"
+      \ "place"
+      \ s:ghcid_sign_id
+      \ "line=" . error.lnum
+      \ "name=ghcid-error"
+      \ "file=" . error.filename
 
-  let s:ghcid_sign_id += 1
+    let s:ghcid_sign_id += 1
+  endif
 
   return data
 endfunction
