@@ -139,7 +139,8 @@ endfunction
 function! s:ghcid_add_to_qflist(e)
   let qflist = getqflist()
   for i in qflist
-    if i.lnum == a:e.lnum && i.bufnr == a:e.bufnr
+    let filename = has_key(i, 'filename') ? i.filename : bufname(i.bufnr)
+    if i.lnum == a:e.lnum && filename == a:e.filename
       return
     endif
   endfor
