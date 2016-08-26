@@ -57,6 +57,10 @@ function! s:ghcid_gotowin()
   call win_gotoid(s:ghcid_win_id)
 endfunction
 
+function! s:ghcid_allgood()
+  return empty(getqflist())
+endfunction
+
 function! s:ghcid_update_status()
   if s:ghcid_winnr() <= 0
     return
@@ -101,7 +105,7 @@ function! s:ghcid_openwin(buf)
   echo
 endfunction
 
-autocmd BufWritePost,FileChangedShellPost *.hs call s:ghcid_clear_signs()
+autocmd BufWritePost,FileChangedShellPost *.hs call s:ghcid_update_signs()
 autocmd TextChanged                       *.hs call s:ghcid_clear_signs()
 autocmd BufEnter                          *.hs call s:ghcid_init()
 
@@ -174,6 +178,7 @@ function! s:ghcid_update(ghcid, data) abort
     echo "Ghcid: OK"
     call setqflist([])
     call s:ghcid_update_status()
+    call s:ghcid_clear_signs()
     return
   endif
 
@@ -239,6 +244,13 @@ function! s:ghcid_clear_signs() abort
 
   " Clear the quickfix list.
   call setqflist([])
+endfunction
+
+function! s:ghcid_update_signs() abort
+  if !s:ghcid_allgood()
+    return
+  endif
+  call s:ghcid_clear_signs()
 endfunction
 
 function! s:ghcid() abort
