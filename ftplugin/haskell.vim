@@ -289,7 +289,6 @@ function! s:ghcid() abort
     let s:ghcid_job_id = b:terminal_job_id
   endif
 
-  let s:ghcid_win_id = win_getid()
   let s:ghcid_buf_id = bufnr('%')
   wincmd p
 endfunction
