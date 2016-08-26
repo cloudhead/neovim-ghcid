@@ -91,9 +91,11 @@ function! s:ghcid_closewin()
   endif
 endfunction
 
-function! s:ghcid_openwin(buf)
-  if a:buf > 0
-    exe 'keepalt' 'below' g:ghcid_lines . 'sp' bufname(a:buf)
+function! s:ghcid_openwin()
+  let buf = s:ghcid_bufnr()
+
+  if buf > 0
+    exe 'keepalt' 'below' g:ghcid_lines . 'sp' bufname(buf)
   else
     exe 'keepalt' 'below' g:ghcid_lines . 'new'
     file ghcid
@@ -217,7 +219,7 @@ function! s:ghcid_update(ghcid, data) abort
   " Since we got here, we must have a valid error.
   " Open the ghcid window.
   if !s:ghcid_winnr()
-    call s:ghcid_openwin(s:ghcid_bufnr())
+    call s:ghcid_openwin()
     wincmd p
   endif
 
@@ -277,10 +279,8 @@ function! s:ghcid() abort
     endwhile
   endfunction
 
-  if s:ghcid_bufnr() > 0
-    call s:ghcid_openwin(s:ghcid_bufnr())
-  else
-    call s:ghcid_openwin(0)
+  call s:ghcid_openwin()
+  if s:ghcid_bufnr() <= 0
     call termopen(g:ghcid_command, opts)
     let s:ghcid_job_id = b:terminal_job_id
   endif
