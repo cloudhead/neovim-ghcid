@@ -90,7 +90,7 @@ function! s:ghcid_openwin(buf)
   endif
   let s:ghcid_win_id = win_getid()
   call s:ghcid_update_status()
-  silent set nobuflisted
+  silent setlocal nobuflisted
   normal! G
   echo
 endfunction
