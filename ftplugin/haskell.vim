@@ -83,9 +83,9 @@ endfunction
 
 function! s:ghcid_openwin(buf)
   if a:buf > 0
-    exe 'below' g:ghcid_lines . 'sp' '#' . a:buf
+    exe 'keepalt' 'below' g:ghcid_lines . 'sp' bufname(a:buf)
   else
-    exe 'below' g:ghcid_lines . 'new'
+    exe 'keepalt' 'below' g:ghcid_lines . 'new'
     file ghcid
   endif
   let s:ghcid_win_id = win_getid()
