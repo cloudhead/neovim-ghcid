@@ -86,9 +86,13 @@ endfunction
 
 function! s:ghcid_closewin()
   if !g:ghcid_keep_open
-    call s:ghcid_gotowin()
-    quit
+    call s:ghcid_closewin_force()
   endif
+endfunction
+
+function! s:ghcid_closewin_force()
+  call s:ghcid_gotowin()
+  quit
 endfunction
 
 function! s:ghcid_openwin()
@@ -261,7 +265,7 @@ function! s:ghcid() abort
   let s:ghcid_killcmd = 0
 
   if s:ghcid_winnr() > 0
-    echo "Ghcid: Already running"
+    call s:ghcid_closewin_force()
     return
   endif
 
