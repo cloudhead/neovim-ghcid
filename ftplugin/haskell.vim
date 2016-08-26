@@ -106,7 +106,6 @@ function! s:ghcid_openwin(buf)
 endfunction
 
 autocmd BufWritePost,FileChangedShellPost *.hs call s:ghcid_update_signs()
-autocmd TextChanged                       *.hs call s:ghcid_clear_signs()
 autocmd BufEnter                          *.hs call s:ghcid_init()
 
 let s:ghcid_error_header_regexp=
