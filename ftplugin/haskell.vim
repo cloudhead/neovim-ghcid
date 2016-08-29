@@ -163,7 +163,8 @@ endfunction
 function! s:ghcid_add_to_qflist(e)
   let qflist = getqflist()
   for i in qflist
-    if i.lnum == a:e.lnum && i.bufnr == a:e.bufnr
+    if has_key(i, 'bufnr') && has_key(a:e, 'bufnr') &&
+      \ i.lnum == a:e.lnum && i.bufnr == a:e.bufnr
       return
     endif
   endfor
