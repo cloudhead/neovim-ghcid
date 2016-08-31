@@ -14,7 +14,7 @@ if !exists("g:ghcid_lines")
 endif
 
 if !exists("g:ghcid_keep_open")
-  let g:ghcid_keep_open = 0
+  let g:ghcid_keep_open = !&hidden
 endif
 
 if !exists("g:ghcid_command")
