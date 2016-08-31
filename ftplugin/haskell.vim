@@ -143,7 +143,7 @@ function! s:ghcid_parse_error_header(str) abort
   let efile = fnamemodify(expand(file), ':.')
 
   " Not a valid filename.
-  if empty(efile)
+  if empty(efile) || !filereadable(efile)
     return {}
   endif
 
