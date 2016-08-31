@@ -161,6 +161,8 @@ function! s:ghcid_parse_error_header(str) abort
 endfunction
 
 function! s:ghcid_add_to_qflist(e)
+  " FIXME: New errors should replace old ones, and appended, instead of being
+  " ignored, since the order matters.
   let qflist = getqflist()
   for i in qflist
     if has_key(i, 'bufnr') && has_key(a:e, 'bufnr') &&
@@ -253,6 +255,12 @@ function! s:ghcid_clear_signs() abort
 endfunction
 
 function! s:ghcid_update_signs() abort
+  " FIXME: Sometimes, the list is cleared even though there are still errors,
+  " yet Ghcid will not send new input, so we're left with a state in which
+  " there is clearly an error in the console, but the qflist is empty. This
+  " is probably due to the fact that ghcid doesn't reload if it doesn't detect
+  " a change in the content. To reproduce: create an error in file A, and
+  " write file B.
   call setqflist([])
 
   if !s:ghcid_allgood()
