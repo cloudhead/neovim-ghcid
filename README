@@ -2,8 +2,10 @@
 
               neovim-ghcid
 
->>> NOTICE: This project is now part of ghcid.
->>> Its new home is at <https://github.com/ndmitchell/ghcid/tree/master/plugins/nvim>
+*************************************************************************************
+** NOTICE: This project is now part of ghcid.                                      **
+** Its new home is at https://github.com/ndmitchell/ghcid/tree/master/plugins/nvim **
+*************************************************************************************
 
 Provides instant haskell error feedback inside of neovim, via ghcid[1].
 This should be a lot faster than running neomake with ghc-mod, and
